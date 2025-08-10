@@ -12,13 +12,14 @@ const CreateMeetingForm = () => {
     voiceBridge: '',
     record: 'false',
     autoStartRecording: 'false',
-    allowStartStopRecording: 'false',
+    allowStartStopRecording: 'true',
     dialNumber: '',
     webVoice: '',
     logoutURL: '',
     maxParticipants: '',
     duration: '',
-    userID: ''
+    userID: '',
+    redirect: 'true'
   });
 
   const handleChange = (e) => {
@@ -29,18 +30,22 @@ const CreateMeetingForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/api/bbb/create', formData);
-      console.log('BBB Response:', res.data);
-      alert('Meeting created. Check console for XML response.');
-    } catch (error) {
-      console.error('Error creating meeting:', error);
-      alert('Failed to create meeting');
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await axios.get('http://localhost:5000/api/bbb/create', {
+      params: formData
+    });
+    console.log('BBB Response:', res.data);
+    alert('Meeting created. Check console for XML response.');
+  } catch (error) {
+    console.error('Error creating meeting:', error);
+    alert('Failed to create meeting');
+  }
+};
+
 
   return (
+
     <form onSubmit={handleSubmit}>
       <h2>Create a Meeting</h2>
 
@@ -63,6 +68,11 @@ const CreateMeetingForm = () => {
         <option value="true">Record: Yes</option>
       </select>
 
+      <select name="redirect" onChange={handleChange}>
+        <option value="false">Redirect: No</option>
+        <option value="true">Redirect: Yes</option>
+      </select>
+
       <select name="autoStartRecording" onChange={handleChange}>
         <option value="false">Auto Start Recording: No</option>
         <option value="true">Auto Start Recording: Yes</option>
@@ -75,6 +85,11 @@ const CreateMeetingForm = () => {
 
       <button type="submit">Create Meeting</button>
     </form>
+
+
+
+
+    
   );
 };
 
