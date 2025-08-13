@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const bbbController = require('../controllers/bbbController');
+const auth = require('../middleware/auth');
 
-router.get('/join', bbbController.joinMeeting);
-router.get('/create', bbbController.createMeeting);
-router.get('/isRunning', bbbController.isMeetingRunning);
+router.get('/join', auth, bbbController.joinMeeting);
+router.get('/create', auth, bbbController.createMeeting);
+router.get('/isRunning', auth, bbbController.isMeetingRunning);
+
 
 module.exports = router;
