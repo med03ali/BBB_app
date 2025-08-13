@@ -15,12 +15,12 @@ exports.signIn = async (req, res) => {
     if (password !== user.password) return res.status(401).json({ message: 'Invalid password' });
 
     const token = jwt.sign(
-      { userId: user.id, fullName: user.fullName, username: user.username },
+      { userId: user.id, fullName: user.fullName, username: user.username, role: user.role },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    res.json({ token, fullName: user.fullName, username: user.username });
+    res.json({ token, fullName: user.fullName, username: user.username, role: user.role });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

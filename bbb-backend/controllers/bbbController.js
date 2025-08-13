@@ -1,4 +1,4 @@
-const { buildJoinURL, buildCreateMeetingURL, buildIsRunningURL } = require('../services/bbbService');
+const { buildJoinURL, buildCreateMeetingURL, buildIsRunningURL,getMeetingURL } = require('../services/bbbService');
 const axios = require('axios');
 const xml2js = require('xml2js');
 
@@ -21,11 +21,21 @@ exports.joinMeeting = (req, res) => {
 exports.createMeeting = async (req, res) => {
   try {
     const url = buildCreateMeetingURL(req.query);
+    // console.log(url);
+    const meetingID = req.query.meetingID;
+    const fullName = req.query.fullName;
+
+    const meetingURL = getMeetingURL(meetingID,fullName);
     // Make the HTTP request to BBB API
     const response = await axios.get(url);
     
     
-    res.send(response.data); // send XML back to frontend
+    res.json({
+      xml: response.data,
+      meetingURL: meetingURL
+    });
+
+    // res.send(response.data);
   } catch (err) {
     console.error('Error creating meeting:', err);
     res.status(500).json({ error: 'Internal server error' });

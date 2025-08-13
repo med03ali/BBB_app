@@ -20,8 +20,15 @@ function buildIsRunningURL(meetingID) {
   return `${BBB_URL}isMeetingRunning?${query}&checksum=${checksum}`;
 }
 
+function getMeetingURL(meetingID,fullName) {
+  const queryParams = `fullName=${encodeURIComponent(fullName)}&meetingID=${encodeURIComponent(meetingID)}&password=moderatorPassword&redirect=true`;
+  const checksum = generateChecksum(queryParams, 'join');
+  return `${BBB_URL}join?${queryParams}&checksum=${checksum}`;
+}
+
 module.exports = {
   buildJoinURL,
   buildCreateMeetingURL,
-  buildIsRunningURL
+  buildIsRunningURL,
+  getMeetingURL
 };
