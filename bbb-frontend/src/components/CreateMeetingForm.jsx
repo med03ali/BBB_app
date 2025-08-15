@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { createMeeting } from '../api/bbb';
+import { createMeeting, saveMeetingToDb } from '../api/bbb';
 
 export default function CreateMeetingForm({user}) {
   const [formData, setFormData] = useState({
-    meetingID: crypto.randomUUID(),
+    meetingID: '',
     name: '',
     fullName: user.fullName,
     attendeePW: 'attendeePassword',
@@ -22,11 +22,14 @@ export default function CreateMeetingForm({user}) {
   const [meetingURL, setMeetingURL] = useState(''); 
   const [copied, setCopied] = useState(false);
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    formData.meetingID = crypto.randomUUID();
+  
 
-    if (!formData.meetingID || !formData.name) {
-      alert('Please enter Meeting ID and Meeting Name.');
+    if (!formData.name) {
+      alert('Please enter Meeting Name.');
       return;
     }
 
@@ -34,8 +37,21 @@ export default function CreateMeetingForm({user}) {
       const response = await createMeeting(formData);
       console.log('Meeting created:', response.data.xml);
       alert('Meeting created! Check console for response.');
+      setMeetingURL(response.data.meetingURL);
+
+      const meetingData = {
+        meeting_id: formData.meetingID,
+        meeting_name: formData.name,
+        created_by: user.id,
+        moderator_pw : formData.moderatorPW,
+        attendee_pw : formData.attendeePW
+      };
+      console.log(meetingData);
+      await saveMeetingToDb(meetingData);
+
+      
       setSubmitted(true);
-      setMeetingURL(response.data.meetingURL)
+
     } catch (error) {
       console.error('Error creating meeting:', error);
       alert('Failed to create meeting');
@@ -60,15 +76,6 @@ export default function CreateMeetingForm({user}) {
     How about you create a meeting?
   </h2>
 
-  {/* <input
-    name="meetingID"
-    placeholder="Meeting ID"
-    value={formData.meetingID}
-    onChange={handleChange}
-    required
-    class="block w-full px-4 py-2 text-center text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-  /> */}
-
   <input
     name="name"
     placeholder="Meeting Name"
@@ -78,13 +85,6 @@ export default function CreateMeetingForm({user}) {
     class="block w-full px-4 py-2 text-center text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
   />
 
-  {/* <input
-    name="fullName"
-    placeholder="Full Name"
-    value={formData.fullName}
-    onChange={handleChange}
-    class="block w-full px-4 py-2 text-center text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-  /> */}
 
   <div class="text-center">
     <button

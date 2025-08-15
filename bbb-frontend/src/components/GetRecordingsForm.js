@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { isMeetingRunning } from '../api/bbb';
+import { getRecordings } from '../api/bbb';
 
 export default function IsMeetingRunningForm() {
   const [meetingID, setMeetingID] = useState('');
-  const [status, setStatus] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,23 +12,16 @@ export default function IsMeetingRunningForm() {
       return;
     }
 
-    setLoading(true);
-    setStatus(null);
 
     try {
-      const res = await isMeetingRunning({ meetingID });
-      setStatus(res.data.running ? 'Meeting is running' : 'Meeting is NOT running');
+      
     } catch (error) {
-      console.error('Error checking meeting status:', error);
-      setStatus('Error checking meeting status');
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   return (
     <form onSubmit={handleSubmit} class="max-w-md mx-auto p-6 bg-white rounded-xl shadow-2xl space-y-4">
-  <h2 class="text-2xl font-bold text-center text-gray-800">Check if a meeting is running</h2>
+  <h2 class="text-2xl font-bold text-center text-gray-800"></h2>
 
   <input
     type="text"

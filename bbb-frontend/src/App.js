@@ -14,8 +14,9 @@ function App() {
     const fullName = localStorage.getItem('fullName');
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
+    const id = localStorage.getItem('id');
     if (token && fullName && username) {
-      setUser({ token, fullName, username, role });
+      setUser({ token, fullName, username, role, id });
   }
 }, []);
 
@@ -24,34 +25,7 @@ function App() {
   }
 
   return (
-  //   <div class="p-6 bg-gray-50 min-h-screen flex flex-col items-center justify-center space-y-8">
-
-  // <div class="w-full max-w-md bg-white p-6 rounded-xl shadow-lg flex justify-between items-center">
-  //   <h1 class="text-2xl font-extrabold text-gray-900 leading-tight">
-  //     Welcome, {user.fullName}
-  //   </h1>
-  //   <button
-  //     onClick={() => {
-  //       localStorage.clear();
-  //       setUser(null);
-  //     }}
-  //     class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-  //   >
-  //     Sign Out
-  //   </button>
-  // </div>
-
-  // {/* <p class="text-center text-lg text-gray-600 max-w-md">
-  //   Role: <span class="font-bold">{user.role ? user.role : 'No role assigned'}</span>
-  // </p> */}
-
-  // <div class="flex flex-col space-y-4 max-w-md w-full">
-  //   {user.role === 'instructor' && <CreateMeetingForm user={user} />}
-  //   {user.role === 'student' && <JoinMeetingForm user={user} />}
-  //   <IsMeetingRunningForm user={user} />
-  // </div>
-  
-  // </div>
+    
   <div class="p-6 bg-gray-900 min-h-screen flex flex-col items-center justify-center space-y-8">
 
   <div class="w-full max-w-md bg-gray-800 p-6 rounded-xl shadow-lg flex justify-between items-center">
