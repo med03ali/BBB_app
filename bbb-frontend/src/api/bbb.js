@@ -41,3 +41,9 @@ export function getRecordings(params) {
     headers: getAuthHeaders(),
   });
 }
+
+export function addRecord(record) {
+    return axios.post(`http://localhost:5000/api/records/add`,
+      record
+    )
+  }

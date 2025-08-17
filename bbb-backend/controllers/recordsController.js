@@ -5,7 +5,7 @@ async function addRecord(req, res) {
   try {
     const record = req.body;
 
-    if (!record || !record.recording_id || !record.recording_url || !record.meetingID) {
+    if (!record || !record.record_id || !record.url || !record.meetingID) {
       return res.status(400).json({ error: 'Missing record details' });
     }
     

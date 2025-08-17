@@ -9,22 +9,48 @@ async function addRecord(record) {
         throw new Error('Missing required parameters: meetingID, record_id, or url');
     }
 
-    let session;
     try {
-        // Step 1: Query the 'sessions' table to find the session_id and created_at.
-        const selectSql = 'SELECT id, created_at FROM sessions WHERE meeting_id = ?';
-        const [rows] = await pool.query(selectSql, [meetingID]);
+        // Step 1: Check if the recording already exists.
+        const checkSql = 'SELECT id FROM recordings WHERE record_id = ?';
+        
+        // Wrap the callback-based pool.query in a Promise to use with await.
+        const existingRecords = await new Promise((resolve, reject) => {
+            pool.query(checkSql, [record_id], (error, results) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve(results);
+            });
+        });
 
-        if (rows.length === 0) {
+        if (existingRecords.length > 0) {
+            console.log(`Recording with record_id ${record_id} already exists. Skipping insertion.`);
+            return { message: 'Recording already exists, skipping insertion.' };
+        }
+
+        // Step 2: If the recording does not exist, find the session ID.
+        const selectSql = 'SELECT id, created_at FROM sessions WHERE meeting_id = ?';
+        
+        // Wrap the callback-based pool.query in a Promise to use with await.
+        const sessions = await new Promise((resolve, reject) => {
+            pool.query(selectSql, [meetingID], (error, results) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve(results);
+            });
+        });
+
+        if (sessions.length === 0) {
             throw new Error(`Session with meeting_id ${meetingID} not found.`);
         }
 
         // We found the session. Get the session's ID and created_at timestamp.
-        session = rows[0];
+        const session = sessions[0];
         const session_id = session.id;
         const created_at = session.created_at;
 
-        // Step 2: Now, insert into the 'recordings' table using the fetched data.
+        // Step 3: Insert into the 'recordings' table using the fetched data.
         const insertSql = 'INSERT INTO recordings (session_id, record_id, url, is_public, created_at) VALUES (?, ?, ?, ?, ?)';
         const values = [
             session_id,
@@ -34,7 +60,15 @@ async function addRecord(record) {
             created_at
         ];
 
-        const [results] = await pool.query(insertSql, values);
+        // Wrap the callback-based pool.query in a Promise to use with await.
+        const results = await new Promise((resolve, reject) => {
+            pool.query(insertSql, values, (error, results) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve(results);
+            });
+        });
 
         console.log("Record added successfully:", results);
         return results;
