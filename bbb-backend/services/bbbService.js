@@ -26,9 +26,16 @@ function getMeetingURL(meetingID,fullName) {
   return `${BBB_URL}join?${queryParams}&checksum=${checksum}`;
 }
 
+function buildgetRecordingsURL(meetingID){
+  const query = `meetingID=${encodeURIComponent(meetingID)}`;
+  const checksum = generateChecksum(query,'getRecordings');
+  return `${BBB_URL}getRecordings?${query}&checksum=${checksum}`;
+}
+
 module.exports = {
   buildJoinURL,
   buildCreateMeetingURL,
   buildIsRunningURL,
-  getMeetingURL
+  getMeetingURL,
+  buildgetRecordingsURL
 };

@@ -3,6 +3,7 @@ import SignIn from './pages/SignIn';
 import CreateMeetingForm from './components/CreateMeetingForm';
 import JoinMeetingForm from './components/JoinMeetingForm';
 import IsMeetingRunningForm from './components/IsMeetingRunningForm';
+import GetRecordingsForm from './components/GetRecordingsForm';
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
     {user.role === 'instructor' && <CreateMeetingForm user={user} />}
     {user.role === 'student' && <JoinMeetingForm user={user} />}
     <IsMeetingRunningForm user={user} />
+    <GetRecordingsForm user={user}/>
   </div>
   
   </div>

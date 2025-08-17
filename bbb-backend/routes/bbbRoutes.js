@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 router.get('/join', auth, bbbController.joinMeeting);
 router.get('/create', auth, bbbController.createMeeting);
 router.get('/isRunning', auth, bbbController.isMeetingRunning);
+router.get('/getRecordings', auth, bbbController.getRecordings);
 
 
 module.exports = router;

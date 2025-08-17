@@ -1,6 +1,7 @@
-const { buildJoinURL, buildCreateMeetingURL, buildIsRunningURL,getMeetingURL } = require('../services/bbbService');
+const { buildJoinURL, buildCreateMeetingURL, buildIsRunningURL,getMeetingURL, buildgetRecordingsURL } = require('../services/bbbService');
 const axios = require('axios');
 const xml2js = require('xml2js');
+const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
 
 exports.joinMeeting = (req, res) => {
   const { meetingID, fullName, attendeePW } = req.query;
@@ -54,6 +55,7 @@ exports.isMeetingRunning = async (req, res) => {
     const url = buildIsRunningURL(meetingID);
     const response = await axios.get(url);
     const xml = response.data;
+   
 
     // Parse XML to JSON
     xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
@@ -71,3 +73,73 @@ exports.isMeetingRunning = async (req, res) => {
     res.status(500).json({ error: 'Failed to check meeting status' });
   }
 };
+
+
+exports.getRecordings = async (req, res) => {
+  const {meetingID} = req.query;
+
+  if (!meetingID) {
+    return res.status(400).json({ error: 'Missing meetingID parameter' });
+  }
+
+   try {
+    const url = buildgetRecordingsURL(meetingID);
+    const response = await axios.get(url);
+    const xml = response.data;
+    const result = await parser.parseStringPromise(xml);
+   
+
+    const recordings = result?.response?.recordings?.recording;
+        if (!recordings) {
+            // No recordings found for this meeting ID.
+            return res.json({ 
+                recordID: null, 
+                podcastUrl: null, 
+                presentationUrl: null,
+                message: 'No recordings found for this meeting ID.'
+            });
+        }
+
+        const recordingData = recordings;
+
+        const recordID = recordingData.recordID;
+
+        const formats = recordingData.playback?.format;
+
+        let podcastUrl = null;
+        let presentationUrl = null;
+
+        if (formats && Array.isArray(formats)) {
+            // Iterate through the formats to find the specific URLs.
+            formats.forEach(format => {
+                if (format.type === 'podcast') {
+                    podcastUrl = format.url;
+                }
+                if (format.type === 'presentation') {
+                    presentationUrl = format.url;
+                }
+            });
+        } else if (formats && typeof formats === 'object') {
+            // Handle the case where there is only one format, not an array.
+            if (formats.type === 'podcast') {
+                podcastUrl = formats.url;
+            }
+            if (formats.type === 'presentation') {
+                presentationUrl = formats.url;
+            }
+        }
+
+        res.json({
+            recordID,
+            podcastUrl,
+            presentationUrl,
+        });
+
+  } catch (error) {
+    console.error('Error  getting recordings:', error.message);
+    res.status(500).json({ error: 'Failed to grt recordings' });
+  }
+
+
+
+}
