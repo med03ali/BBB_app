@@ -22,7 +22,9 @@ exports.joinMeeting = (req, res) => {
 exports.createMeeting = async (req, res) => {
   try {
     const url = buildCreateMeetingURL(req.query);
-    // console.log(url);
+    
+    console.log(url);
+    
     const meetingID = req.query.meetingID;
     const fullName = req.query.fullName;
 
@@ -74,72 +76,61 @@ exports.isMeetingRunning = async (req, res) => {
   }
 };
 
-
 exports.getRecordings = async (req, res) => {
-  const {meetingID} = req.query;
+    const { meetingID } = req.query;
 
-  if (!meetingID) {
-    return res.status(400).json({ error: 'Missing meetingID parameter' });
-  }
+    if (!meetingID) {
+        return res.status(400).json({ error: 'Missing meetingID parameter' });
+    }
 
-   try {
-    const url = buildgetRecordingsURL(meetingID);
-    const response = await axios.get(url);
-    const xml = response.data;
-    const result = await parser.parseStringPromise(xml);
-   
+    try {
+        const url = buildgetRecordingsURL(meetingID);
+        const response = await axios.get(url);
+        const xml = response.data;
+        const result = await parser.parseStringPromise(xml);
 
-    const recordings = result?.response?.recordings?.recording;
+        // This line correctly handles cases where 'recordings' is either an array or a single object.
+        const recordings = result?.response?.recordings?.recording;
+        
         if (!recordings) {
-            // No recordings found for this meeting ID.
-            return res.json({ 
-                recordID: null, 
-                podcastUrl: null, 
-                presentationUrl: null,
-                message: 'No recordings found for this meeting ID.'
-            });
+            // No recordings found, return an empty array.
+            return res.json([]);
         }
 
-        const recordingData = recordings;
+        // Ensure 'recordings' is always an array for consistent processing.
+        const recordingsArray = Array.isArray(recordings) ? recordings : [recordings];
 
-        const recordID = recordingData.recordID;
+        // Map over the array of recordings to process each one.
+        const processedRecordings = recordingsArray.map(recording => {
+            const recordID = recording.recordID;
+            const formats = recording.playback?.format;
 
-        const formats = recordingData.playback?.format;
+            let podcastUrl = null;
+            let presentationUrl = null;
 
-        let podcastUrl = null;
-        let presentationUrl = null;
-
-        if (formats && Array.isArray(formats)) {
-            // Iterate through the formats to find the specific URLs.
-            formats.forEach(format => {
-                if (format.type === 'podcast') {
+            // Ensure formats is an array for consistent iteration.
+            const formatsArray = Array.isArray(formats) ? formats : [formats];
+            
+            formatsArray.forEach(format => {
+                if (format?.type === 'podcast') {
                     podcastUrl = format.url;
                 }
-                if (format.type === 'presentation') {
+                if (format?.type === 'presentation') {
                     presentationUrl = format.url;
                 }
             });
-        } else if (formats && typeof formats === 'object') {
-            // Handle the case where there is only one format, not an array.
-            if (formats.type === 'podcast') {
-                podcastUrl = formats.url;
-            }
-            if (formats.type === 'presentation') {
-                presentationUrl = formats.url;
-            }
-        }
 
-        res.json({
-            recordID,
-            podcastUrl,
-            presentationUrl,
+            return {
+                recordID,
+                podcastUrl,
+                presentationUrl
+            };
         });
 
-  } catch (error) {
-    console.error('Error  getting recordings:', error.message);
-    res.status(500).json({ error: 'Failed to grt recordings' });
-  }
+        res.json(processedRecordings);
 
-
-
-}
+    } catch (error) {
+        console.error('Error getting recordings:', error.message);
+        res.status(500).json({ error: 'Failed to get recordings' });
+    }
+};
