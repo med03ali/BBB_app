@@ -1,4 +1,4 @@
-const { buildJoinURL, buildCreateMeetingURL, buildIsRunningURL,getMeetingURL, buildgetRecordingsURL } = require('../services/bbbService');
+const { buildJoinURL, buildCreateMeetingURL, buildIsRunningURL,getMeetingURL, buildgetRecordingsURL, buildDeleteRecordingURL } = require('../services/bbbService');
 const axios = require('axios');
 const xml2js = require('xml2js');
 const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
@@ -134,3 +134,21 @@ exports.getRecordings = async (req, res) => {
         res.status(500).json({ error: 'Failed to get recordings' });
     }
 };
+
+exports.deleteRecordings = async(req, res) =>{
+  const {recordId} = req.query;
+
+  if(!recordId){
+    return res.status(400).json({ error: 'Missing recordId parameter' });
+  }
+
+  try{
+    const url = buildDeleteRecordingURL(recordId);
+    const response = await axios.get(url);
+    res.json(response.data);
+
+  } catch(error){
+      console.error('Error in deleteRecordings',error.message);
+      res.status(500).json({error : 'Failed to delete recording'});
+    }
+}

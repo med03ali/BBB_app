@@ -79,6 +79,33 @@ async function addRecord(record) {
     }
 }
 
+async function deleteRecord(recordId) {
+    if (!recordId) {
+        throw new Error('Missing required parameter: recordId');
+    }
+
+    try {
+        const deleteSql = 'DELETE FROM recordings WHERE record_id = ?';
+        
+        const results = await new Promise((resolve, reject) => {
+            pool.query(deleteSql, [recordId], (error, results) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve(results);
+            });
+        });
+
+        console.log(`Record with record_id ${recordId} deleted successfully:`, results);
+        return results;
+
+    } catch (error) {
+        console.error("Error in deleteRecord:", error.message);
+        throw error; // Re-throw the error so the caller can handle it.
+    }
+}
+
 module.exports = {
-    addRecord
+    addRecord,
+    deleteRecord
 };

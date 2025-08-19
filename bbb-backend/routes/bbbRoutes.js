@@ -7,6 +7,7 @@ router.get('/join', auth, bbbController.joinMeeting);
 router.get('/create', auth, bbbController.createMeeting);
 router.get('/isRunning', auth, bbbController.isMeetingRunning);
 router.get('/getRecordings', auth, bbbController.getRecordings);
+router.get('/deleteRecordings', bbbController.deleteRecordings);
 
 
 module.exports = router;

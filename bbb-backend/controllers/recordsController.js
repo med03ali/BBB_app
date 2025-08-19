@@ -17,6 +17,23 @@ async function addRecord(req, res) {
   }
 }
 
+async function deleteRecord(req, res) {
+  try {
+    const { recordId } = req.body;
+    
+    if (!recordId){
+      return res.status(400).json({ error: 'Missing record id' });
+    }
+
+    await recordsService.deleteRecord(recordId);
+    res.status(201).json({ message: 'Record deleted successfully' });
+  } catch(error){
+    console.error('Error in deleteRecord controller:',error);
+    res.status(500).json({ error: 'Failed to delete record' });
+  }
+}
+
 module.exports = {
-  addRecord
+  addRecord,
+  deleteRecord
 };

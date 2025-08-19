@@ -33,10 +33,17 @@ function buildgetRecordingsURL(meetingID){
   return `${BBB_URL}getRecordings?${query}&checksum=${checksum}`;
 }
 
+function buildDeleteRecordingURL(recordId){
+  const query = `recordID=${encodeURIComponent(recordId)}`;
+  const checksum = generateChecksum(query,`deleteRecordings`);
+  return `${BBB_URL}deleteRecordings?${query}&checksum=${checksum}`;
+}
+
 module.exports = {
   buildJoinURL,
   buildCreateMeetingURL,
   buildIsRunningURL,
   getMeetingURL,
-  buildgetRecordingsURL
+  buildgetRecordingsURL,
+  buildDeleteRecordingURL
 };

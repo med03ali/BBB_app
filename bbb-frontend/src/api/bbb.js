@@ -46,4 +46,19 @@ export function addRecord(record) {
     return axios.post(`http://localhost:5000/api/records/add`,
       record
     )
-  }
+}
+
+
+export const deleteRecording = (recordId) => {
+  return axios.get(`${API_BASE}/deleteRecordings`, {
+    params: {
+      recordId
+    }
+  });
+};
+
+export const deleteRecordFromDB = (recordId) => {
+  return axios.post('http://localhost:5000/api/records/delete', {
+    recordId: recordId
+  });
+};
