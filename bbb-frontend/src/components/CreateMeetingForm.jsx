@@ -8,6 +8,8 @@ export default function CreateMeetingForm({user}) {
     fullName: user.fullName,
     attendeePW: 'attendeePassword',
     moderatorPW: 'moderatorPassword',
+    record : 'true',
+    allowStartStopRecording : 'true'
   });
 
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
