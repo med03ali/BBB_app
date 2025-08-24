@@ -1,9 +1,7 @@
 const userService = require('../services/userService');
 const jwt = require('jsonwebtoken');
-//const bcrypt = require('bcrypt');
-require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET ;
 
 exports.signIn = async (req, res) => {
   const { username, password } = req.body;

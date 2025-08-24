@@ -1,6 +1,8 @@
 const generateChecksum = require('../utils/checksum');
-const BBB_URL = 'https://medalibbb.duckdns.org/bigbluebutton/api/';
-//process.env.BBB_URL || 
+const BBB_URL = process.env.BBB_URL ;
+
+
+
 
 function buildJoinURL(meetingID, fullName, attendeePW) {
   const queryParams = `fullName=${encodeURIComponent(fullName)}&meetingID=${encodeURIComponent(meetingID)}&password=${encodeURIComponent(attendeePW)}&redirect=true`;
