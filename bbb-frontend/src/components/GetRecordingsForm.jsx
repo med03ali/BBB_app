@@ -79,7 +79,7 @@ export default function GetRecordingsForm({user}) {
       await deleteRecording(recordId);
       await deleteRecordFromDB(recordId);
       console.log(`Record with ID ${recordId} deleted successfully`);
-      // Update the local state to remove the deleted record from the UI
+      
       setRecordingData(prevData => prevData.filter(record => record.recordID !== recordId));
     } catch (error) {
       console.error('Error in handleDelete', error);

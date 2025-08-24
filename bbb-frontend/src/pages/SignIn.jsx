@@ -17,14 +17,14 @@ export default function SignIn({ onSignIn }) {
       });
       const { token, fullName, role, id } = res.data;
 
-      // Save token and user info in localStorage for persistence
+      
       localStorage.setItem('token', token);
       localStorage.setItem('fullName', fullName);
       localStorage.setItem('username', username);
       localStorage.setItem('role', role);
       localStorage.setItem('id',id);
 
-      // Notify parent component
+      
       onSignIn({ token, fullName, username,role, id });
     } catch (err) {
       setError(err.response?.data?.message || 'Sign in failed');

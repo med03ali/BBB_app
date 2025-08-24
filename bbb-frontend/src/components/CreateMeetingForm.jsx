@@ -64,7 +64,7 @@ export default function CreateMeetingForm({user}) {
     try {
       await navigator.clipboard.writeText(formData.meetingID);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Reset "Copied!" message after 2 seconds
+      setTimeout(() => setCopied(false), 2000); 
     } catch (err) {
       console.error('Failed to copy text: ', err);
     }

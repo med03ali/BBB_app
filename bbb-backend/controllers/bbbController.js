@@ -29,7 +29,7 @@ exports.createMeeting = async (req, res) => {
     const fullName = req.query.fullName;
 
     const meetingURL = getMeetingURL(meetingID,fullName);
-    // Make the HTTP request to BBB API
+    
     const response = await axios.get(url);
     
     
@@ -38,7 +38,6 @@ exports.createMeeting = async (req, res) => {
       meetingURL: meetingURL
     });
 
-    // res.send(response.data);
   } catch (err) {
     console.error('Error creating meeting:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -59,7 +58,6 @@ exports.isMeetingRunning = async (req, res) => {
     const xml = response.data;
    
 
-    // Parse XML to JSON
     xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
       if (err) {
         console.error('XML parsing error:', err);
@@ -89,18 +87,14 @@ exports.getRecordings = async (req, res) => {
         const xml = response.data;
         const result = await parser.parseStringPromise(xml);
 
-        // This line correctly handles cases where 'recordings' is either an array or a single object.
         const recordings = result?.response?.recordings?.recording;
         
         if (!recordings) {
-            // No recordings found, return an empty array.
             return res.json([]);
         }
 
-        // Ensure 'recordings' is always an array for consistent processing.
         const recordingsArray = Array.isArray(recordings) ? recordings : [recordings];
 
-        // Map over the array of recordings to process each one.
         const processedRecordings = recordingsArray.map(recording => {
             const recordID = recording.recordID;
             const formats = recording.playback?.format;
@@ -108,7 +102,6 @@ exports.getRecordings = async (req, res) => {
             let podcastUrl = null;
             let presentationUrl = null;
 
-            // Ensure formats is an array for consistent iteration.
             const formatsArray = Array.isArray(formats) ? formats : [formats];
             
             formatsArray.forEach(format => {

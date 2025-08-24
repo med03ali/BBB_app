@@ -4,7 +4,7 @@ const pool = createPool({
     host: "localhost",
     user: "root",
     password: "Rajmoh95%",
-    database: "bbb_db" // Ajout de la base de données
+    database: "bbb_db"
 });
 
 pool.getConnection((err, connection) => {
