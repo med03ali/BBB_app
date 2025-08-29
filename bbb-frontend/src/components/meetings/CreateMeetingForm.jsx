@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createMeeting, saveMeetingToDb } from '../api/bbb';
+import { createMeeting, saveMeetingToDb } from '../../services/bbbServices';
 
 export default function CreateMeetingForm({user}) {
   const [formData, setFormData] = useState({

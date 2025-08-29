@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:5000/api/bbb';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+// const API_BASE = 'http://localhost:5000/api/bbb';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
@@ -8,14 +10,14 @@ function getAuthHeaders() {
 }
 
 export function createMeeting(params) {
-  return axios.get(`${API_BASE}/create`, {
+  return axios.get(`${API_BASE_URL}/create`, {
     params,
     headers: getAuthHeaders(),
   });
 }
 
 export function joinMeeting(params) {
-  return axios.get(`${API_BASE}/join`, {
+  return axios.get(`${API_BASE_URL}/join`, {
     params,
     headers: getAuthHeaders(),
   });
@@ -29,14 +31,14 @@ export function saveMeetingToDb(params) {
 
 
 export function isMeetingRunning(params) {
-  return axios.get(`${API_BASE}/isRunning`, {
+  return axios.get(`${API_BASE_URL}/isRunning`, {
     params,
     headers: getAuthHeaders(),
   });
 }
 
 export function getRecordings(params) {
-  return axios.get(`${API_BASE}/getRecordings`, {
+  return axios.get(`${API_BASE_URL}/getRecordings`, {
     params,
     headers: getAuthHeaders(),
   });
@@ -50,7 +52,7 @@ export function addRecord(record) {
 
 
 export const deleteRecording = (recordId) => {
-  return axios.get(`${API_BASE}/deleteRecordings`, {
+  return axios.get(`${API_BASE_URL}/deleteRecordings`, {
     params: {
       recordId
     }

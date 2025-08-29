@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { joinMeeting } from '../api/bbb';
+import { joinMeeting } from '../../services/bbbServices';
 
 export default function JoinMeetingForm({user}) {
   const [formData, setFormData] = useState({

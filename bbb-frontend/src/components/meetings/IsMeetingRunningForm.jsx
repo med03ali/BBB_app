@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { isMeetingRunning } from '../api/bbb';
+import { isMeetingRunning } from '../../services/bbbServices';
 
 export default function IsMeetingRunningForm() {
   const [meetingID, setMeetingID] = useState('');

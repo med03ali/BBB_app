@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getRecordings, addRecord, deleteRecording, deleteRecordFromDB } from '../api/bbb';
+import { getRecordings, addRecord, deleteRecording, deleteRecordFromDB } from '../../services/bbbServices';
 
 const initialRecordingData = [];
 
